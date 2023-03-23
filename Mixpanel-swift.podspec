@@ -52,7 +52,7 @@ Pod::Spec.new do |s|
     ss.dependency 'SQLCipher', '>= 3.4.2'
     ss.xcconfig = {
       'OTHER_SWIFT_FLAGS' => '$(inherited) -D SQLITE_HAS_CODEC -D MPCIPHER -D SQLITE_ENABLE_FTS5',
-      'OTHER_CFLAGS' => '$(inherited) -DSQLITE_HAS_CODEC -MPCIPHER -DSQLITE_ENABLE_FTS5',
+      'OTHER_CFLAGS' => '$(inherited) -DSQLITE_HAS_CODEC -DMPCIPHER -DSQLITE_ENABLE_FTS5',
       'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_HAS_CODEC=1 MPCIPHER=1 SQLITE_ENABLE_FTS5=1'
     }
   end
