@@ -7,7 +7,13 @@
 //
 
 import Foundation
-import SQLite3
+#if SWIFT_PACKAGE
+@_exported import CSQLite
+#elseif MPCIPHER
+@_exported import SQLCipher
+#else
+@_exported import SQLite3
+#endif
 
 class MPDB {
     private var connection: OpaquePointer?
