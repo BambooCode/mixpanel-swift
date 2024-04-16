@@ -1,7 +1,7 @@
 
 
 <p align="center">
-  <img src="https://github.com/mixpanel/mixpanel-android/blob/assets/mixpanel.png?raw=true" alt="Mixpanel Swift Library" height="150"/>
+  <img src="https://user-images.githubusercontent.com/71290498/231855731-2d3774c3-dc41-4595-abfb-9c49f5f84103.png" alt="Mixpanel Swift Library" height="150"/>
 </p>
 
 
@@ -73,7 +73,7 @@ import Mixpanel
 func application(_ application: UIApplication,
                  didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     ...
-    Mixpanel.initialize(token: "MIXPANEL_TOKEN", trackAutomaticEvents: true)
+    Mixpanel.initialize(token: "MIXPANEL_TOKEN", trackAutomaticEvents: false)
     ...
 }
 ```
@@ -104,7 +104,7 @@ import Mixpanel
 func application(_ application: UIApplication,
                  didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     ...
-    Mixpanel.initialize(token: "MIXPANEL_TOKEN", trackAutomaticEvents: true)
+    Mixpanel.initialize(token: "MIXPANEL_TOKEN", trackAutomaticEvents: false)
     Mixpanel.mainInstance().track(event: "Sign Up", properties: [
        "source": "Pat's affiliate site",
        "Opted out of email": true
@@ -124,7 +124,7 @@ Mixpanel’s client-side tracking library contains the [optOutTracking()](https:
 
 **Why aren't my events showing up?**
 
-To preserve battery life and customer bandwidth, the Mixpanel library doesn't send the events you record immediately. Instead, it sends batches to the Mixpanel servers every 60 seconds while your application is running, as well as when the application transitions to the background. You can call [flush()](https://mixpanel.github.io/mixpanel-swift/Classes/MixpanelInstance.html#/s:8Mixpanel0A8InstanceC5flush10completionyyycSg_tF) manually if you want to force a flush at a particular moment.
+First, make sure your test device has internet access. To preserve battery life and customer bandwidth, the Mixpanel library doesn't send the events you record immediately. Instead, it sends batches to the Mixpanel servers every 60 seconds while your application is running, as well as when the application transitions to the background. You can call [flush()](https://mixpanel.github.io/mixpanel-swift/Classes/MixpanelInstance.html#/s:8Mixpanel0A8InstanceC5flush10completionyyycSg_tF) manually if you want to force a flush at a particular moment.
 ```swift
 Mixpanel.mainInstance().flush()
 ```

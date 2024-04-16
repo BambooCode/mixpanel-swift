@@ -6,6 +6,7 @@
 //  Copyright © 2016 Mixpanel. All rights reserved.
 //
 
+
 import XCTest
 
 @testable import Mixpanel
@@ -13,7 +14,7 @@ import XCTest
 
 private let devicePrefix = "$device:"
 class MixpanelDemoTests: MixpanelBaseTests {
-    
+
     func test5XXResponse() {
         let testMixpanel = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60)
         testMixpanel.serverURL = kFakeServerUrl
@@ -26,12 +27,12 @@ class MixpanelDemoTests: MixpanelBaseTests {
         XCTAssert(waitTime >= 110, "Network backoff time is less than 2 minutes.")
         XCTAssert(testMixpanel.flushInstance.flushRequest.networkConsecutiveFailures == 2,
                   "Network failures did not equal 2")
-
+        
         XCTAssert(eventQueue(token: testMixpanel.apiToken).count == 2,
                   "Removed an event from the queue that was not sent")
         removeDBfile(testMixpanel.apiToken)
     }
-    
+
     func testFlushEvents() {
         let testMixpanel = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60)
         testMixpanel.identify(distinctId: "d1")
@@ -41,7 +42,7 @@ class MixpanelDemoTests: MixpanelBaseTests {
         flushAndWaitForTrackingQueue(testMixpanel)
         XCTAssertTrue(eventQueue(token: testMixpanel.apiToken).isEmpty,
                       "events should have been flushed")
-        
+
         for i in 0..<60 {
             testMixpanel.track(event: "event \(i)")
         }
@@ -51,7 +52,18 @@ class MixpanelDemoTests: MixpanelBaseTests {
         removeDBfile(testMixpanel.apiToken)
     }
     
-    
+    func testFlushProperties() {
+        let testMixpanel = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60)
+        XCTAssertTrue(testMixpanel.flushBatchSize == 50, "the default flush batch size is set to 50")
+        XCTAssertTrue(testMixpanel.flushInterval == 60, "flush interval is set correctly")
+        testMixpanel.flushBatchSize = 10
+        XCTAssertTrue(testMixpanel.flushBatchSize == 10, "flush batch size is set correctly")
+        testMixpanel.flushBatchSize = 60
+        XCTAssertTrue(testMixpanel.flushBatchSize == 50, "flush batch size is max at 50")
+        testMixpanel.flushInterval = 30
+        XCTAssertTrue(testMixpanel.flushInterval == 30, "flush interval is set correctly")
+    }
+
     func testFlushPeople() {
         let testMixpanel = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60)
         testMixpanel.identify(distinctId: "d1")
@@ -67,7 +79,7 @@ class MixpanelDemoTests: MixpanelBaseTests {
         XCTAssertTrue(peopleQueue(token: testMixpanel.apiToken).isEmpty, "people should have been flushed")
         removeDBfile(testMixpanel.apiToken)
     }
-    
+
     func testFlushGroups() {
         let testMixpanel = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60)
         testMixpanel.identify(distinctId: "d1")
@@ -85,7 +97,7 @@ class MixpanelDemoTests: MixpanelBaseTests {
         XCTAssertTrue(peopleQueue(token: testMixpanel.apiToken).isEmpty, "groups should have been flushed")
         removeDBfile(testMixpanel.apiToken)
     }
-    
+
     func testFlushNetworkFailure() {
         let testMixpanel = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60)
         testMixpanel.serverURL = kFakeServerUrl
@@ -99,7 +111,7 @@ class MixpanelDemoTests: MixpanelBaseTests {
                       "events should still be in the queue if flush fails")
         removeDBfile(testMixpanel.apiToken)
     }
-    
+
     func testFlushQueueContainsCorruptedEvent() {
         let testMixpanel = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60)
         testMixpanel.trackingQueue.async {
@@ -116,7 +128,7 @@ class MixpanelDemoTests: MixpanelBaseTests {
         XCTAssertTrue(eventQueue(token: testMixpanel.apiToken).count == 0, "good events should still be flushed")
         removeDBfile(testMixpanel.apiToken)
     }
-    
+
     func testAddEventContainsInvalidJsonObjectDoubleNaN() {
         let testMixpanel = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60)
         XCTExpectAssert("unsupported property type was allowed") {
@@ -124,7 +136,7 @@ class MixpanelDemoTests: MixpanelBaseTests {
         }
         removeDBfile(testMixpanel.apiToken)
     }
-    
+
     func testAddEventContainsInvalidJsonObjectFloatNaN() {
         let testMixpanel = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60)
         XCTExpectAssert("unsupported property type was allowed") {
@@ -132,7 +144,7 @@ class MixpanelDemoTests: MixpanelBaseTests {
         }
         removeDBfile(testMixpanel.apiToken)
     }
-    
+
     func testAddEventContainsInvalidJsonObjectDoubleInfinity() {
         let testMixpanel = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60)
         XCTExpectAssert("unsupported property type was allowed") {
@@ -140,7 +152,7 @@ class MixpanelDemoTests: MixpanelBaseTests {
         }
         removeDBfile(testMixpanel.apiToken)
     }
-    
+
     func testAddEventContainsInvalidJsonObjectFloatInfinity() {
         let testMixpanel = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60)
         XCTExpectAssert("unsupported property type was allowed") {
@@ -148,7 +160,7 @@ class MixpanelDemoTests: MixpanelBaseTests {
         }
         removeDBfile(testMixpanel.apiToken)
     }
-    
+
     func testAddingEventsAfterFlush() {
         let testMixpanel = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60)
         for i in 0..<10 {
@@ -234,10 +246,10 @@ class MixpanelDemoTests: MixpanelBaseTests {
             XCTAssertEqual(p["p1"] as? String, "a", "custom people property not queued")
             assertDefaultPeopleProperties(p)
             peopleQueue_value = peopleQueue(token: testMixpanel.apiToken)
-            
+
             testMixpanel.people.set(property: "p1", to: "a")
             waitForTrackingQueue(testMixpanel)
-            
+
             peopleQueue_value = peopleQueue(token: testMixpanel.apiToken)
             unidentifiedQueue = unIdentifiedPeopleQueue(token: testMixpanel.apiToken)
             XCTAssertEqual(peopleQueue_value.last?["$distinct_id"] as? String,
@@ -299,7 +311,7 @@ class MixpanelDemoTests: MixpanelBaseTests {
         }
         removeDBfile(testMixpanel.apiToken)
     }
-    
+
     func testCreateAlias() {
         let testMixpanel = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60)
         testMixpanel.people.set(properties:  ["p1": "a"])
@@ -307,7 +319,7 @@ class MixpanelDemoTests: MixpanelBaseTests {
         var unidentifiedQueue = unIdentifiedPeopleQueue(token: testMixpanel.apiToken)
         // the user profile update has been queued up in unidentifiedQueue until identify is called
         XCTAssertTrue(!unidentifiedQueue.isEmpty)
-        
+
         let distinctId = testMixpanel.distinctId
         let alias: String = "a1"
         testMixpanel.createAlias(alias, distinctId: testMixpanel.distinctId)
@@ -319,15 +331,15 @@ class MixpanelDemoTests: MixpanelBaseTests {
         unidentifiedQueue = unIdentifiedPeopleQueue(token: testMixpanel.apiToken)
         // unidentifiedQueue has been flushed
         XCTAssertTrue(unidentifiedQueue.isEmpty)
-        
+
         let testMixpanel2 = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60)
         testMixpanel2.people.set(properties:  ["p1": "a"])
         waitForTrackingQueue(testMixpanel2)
-        
+
         let distinctId2 = testMixpanel2.distinctId
         testMixpanel2.createAlias(alias, distinctId: testMixpanel.distinctId, andIdentify: false)
         waitForTrackingQueue(testMixpanel2)
-        
+
         let unidentifiedQueue2 = unIdentifiedPeopleQueue(token: testMixpanel2.apiToken)
         // The user profile updates should still be held in unidentifiedQueue cause no identify is called
         XCTAssertTrue(!unidentifiedQueue2.isEmpty)
@@ -364,16 +376,16 @@ class MixpanelDemoTests: MixpanelBaseTests {
         let testMixpanel = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60)
         let testMixpanel2 = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60)
         XCTAssertNotEqual(testMixpanel.distinctId, testMixpanel2.distinctId, "by default, distinctId should not be unique to the device")
-        
+
         let testMixpanel3 = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60, useUniqueDistinctId: false)
         let testMixpanel4 = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60, useUniqueDistinctId: false)
         XCTAssertNotEqual(testMixpanel3.distinctId, testMixpanel4.distinctId, "distinctId should not be unique to the device if useUniqueDistinctId is set to false")
-        
+
         let testMixpanel5 = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60, useUniqueDistinctId: true)
         let testMixpanel6 = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60, useUniqueDistinctId: true)
         XCTAssertEqual(testMixpanel5.distinctId, testMixpanel6.distinctId, "distinctId should be unique to the device if useUniqueDistinctId is set to true")
     }
-    
+
     func testHadPersistedDistinctId() {
         let testToken = randomId()
         let testMixpanel = Mixpanel.initialize(token: testToken, trackAutomaticEvents: true, flushInterval: 60)
@@ -381,7 +393,7 @@ class MixpanelDemoTests: MixpanelBaseTests {
         let distinctId = testMixpanel.distinctId
         let testMixpanel2 = Mixpanel.initialize(token: testToken, trackAutomaticEvents: true, flushInterval: 60)
         XCTAssertEqual(testMixpanel2.distinctId, distinctId, "mixpanel anonymous distinct id should not be changed for each init")
-                
+
         let userId: String = "u1"
         testMixpanel.identify(distinctId: userId)
         waitForTrackingQueue(testMixpanel)
@@ -433,7 +445,7 @@ class MixpanelDemoTests: MixpanelBaseTests {
                        "reserved property override failed")
         removeDBfile(testMixpanel.apiToken)
     }
-    
+
     func testTrackWithOptionalProperties() {
         let optNil: Double? = nil
         let optDouble: Double? = 1.0
@@ -543,7 +555,7 @@ class MixpanelDemoTests: MixpanelBaseTests {
                       "clear super properties failed")
         removeDBfile(testMixpanel.apiToken)
     }
-    
+
     func testSettingSuperPropertiesWhenInit() {
         let testMixpanel = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60, superProperties: ["mp_lib": "flutter"])
         waitForTrackingQueue(testMixpanel)
@@ -863,7 +875,7 @@ class MixpanelDemoTests: MixpanelBaseTests {
         XCTAssertEqual(q[groupKey] as? [String], [groupValue], "addGroup people update not queued")
         assertDefaultPeopleProperties(q)
         testMixpanel.addGroup(groupKey: groupKey, groupID: groupValue)
-        
+
         waitForTrackingQueue(testMixpanel)
         XCTAssertEqual(testMixpanel.currentSuperProperties()[groupKey] as? [String], [groupValue])
         waitForTrackingQueue(testMixpanel)
@@ -907,7 +919,7 @@ class MixpanelDemoTests: MixpanelBaseTests {
         XCTAssertEqual(q3, [groupKey], "removeGroup people update not queued")
         removeDBfile(testMixpanel.apiToken)
     }
-    
+
     func testMultipleInstancesWithSameToken() {
         let testToken = randomId()
         let concurentQueue = DispatchQueue(label: "multithread", attributes: .concurrent)
@@ -920,7 +932,7 @@ class MixpanelDemoTests: MixpanelBaseTests {
                 testMixpanel?.track(event: "test")
             }
           }
-        
+
         var testMixpanel2: MixpanelInstance?
         for _ in 1...10 {
             concurentQueue.async {
@@ -934,13 +946,12 @@ class MixpanelDemoTests: MixpanelBaseTests {
         testMixpanel2 = Mixpanel.initialize(token: testToken, trackAutomaticEvents: true, flushInterval: 60)
         XCTAssertTrue(testMixpanel === testMixpanel2, "instance with same token should be reused and no sqlite db locked error should be populated")
     }
-    
-    
+
     func testMultipleInstancesWithSameTokenButDifferentInstanceNameShouldNotCrash() {
         let testToken = randomId()
         let concurentQueue = DispatchQueue(label: "multithread", attributes: .concurrent)
 
-        
+
         for i in 1...10 {
             concurentQueue.async {
                 let testMixpanel = Mixpanel.initialize(token: testToken, trackAutomaticEvents: true, flushInterval: 60, instanceName: "instance\(i)")
@@ -948,65 +959,70 @@ class MixpanelDemoTests: MixpanelBaseTests {
                 testMixpanel.track(event: "test")
             }
           }
-        
+
         sleep(5)
         XCTAssertTrue(true, "no sqlite db locked error should be populated")
         for j in 1...10 {
             removeDBfile("instance\(j)")
         }
     }
-    
+
     func testMultipleInstancesWithSameTokenButDifferentInstanceName() {
         let testToken = randomId()
-        let instance1 = Mixpanel.initialize(token: testToken, trackAutomaticEvents: true, flushInterval: 60, instanceName: "instance1")
-        let instance2 = Mixpanel.initialize(token: testToken, trackAutomaticEvents: true, flushInterval: 60, instanceName: "instance2")
-        
+        let instanceName1 = randomId()
+        let instanceName2 = randomId()
+        let instance1 = Mixpanel.initialize(token: testToken, trackAutomaticEvents: true, flushInterval: 60, instanceName: instanceName1)
+        let instance2 = Mixpanel.initialize(token: testToken, trackAutomaticEvents: true, flushInterval: 60, instanceName: instanceName2)
+
         XCTAssertNotEqual(instance1.distinctId, instance2.distinctId)
         instance1.identify(distinctId: "user1")
         instance1.track(event: "test")
         waitForTrackingQueue(instance1)
+        waitForTrackingQueue(instance2)
+        
         XCTAssertEqual(instance1.distinctId, "user1")
         XCTAssertEqual(instance1.userId, "user1")
-        let events = eventQueue(token: "instance1")
+        let events = eventQueue(token: instanceName1)
         let properties = events.last?["properties"] as? InternalProperties
-        // event property should have the current distinct id
         XCTAssertEqual(properties?["distinct_id"] as? String, "user1")
-        
+
         instance1.people.set(property: "p1", to: "a")
         waitForTrackingQueue(instance1)
+        waitForTrackingQueue(instance2)
         
-        let peopleQueue_value = peopleQueue(token: "instance1")
+        let peopleQueue_value = peopleQueue(token: instanceName1)
         let setValue = peopleQueue_value.last!["$set"] as! InternalProperties
         XCTAssertEqual(setValue["p1"] as? String, "a", "custom people property not queued")
-        
+
         XCTAssertEqual(peopleQueue_value.last?["$distinct_id"] as? String,
                        "user1", "distinct id not set properly on the people record")
-        
+
         instance2.identify(distinctId: "user2")
         instance2.track(event: "test2")
+        waitForTrackingQueue(instance1)
         waitForTrackingQueue(instance2)
         XCTAssertEqual(instance2.distinctId, "user2")
         XCTAssertEqual(instance2.userId, "user2")
-        let events2 = eventQueue(token: "instance2")
+        let events2 = eventQueue(token: instanceName2)
         let properties2 = events2.last?["properties"] as? InternalProperties
         // event property should have the current distinct id
         XCTAssertEqual(properties2?["distinct_id"] as? String, "user2")
-        
+
         instance2.people.set(property: "p2", to: "b")
+        waitForTrackingQueue(instance1)
         waitForTrackingQueue(instance2)
-                
-        let peopleQueue2_value = peopleQueue(token: "instance2")
+
+        let peopleQueue2_value = peopleQueue(token: instanceName2)
         XCTAssertEqual(peopleQueue2_value.last?["$distinct_id"] as? String,
                        "user2", "distinct id not set properly on the people record")
-        
+
         let setValue2 = peopleQueue2_value.last!["$set"] as! InternalProperties
         XCTAssertEqual(setValue2["p2"] as? String, "b", "custom people property not queued")
-        
-        removeDBfile("instance1")
-        removeDBfile("instance2")
+
+        removeDBfile(instanceName1)
+        removeDBfile(instanceName2)
     }
-    
-    
+
     func testReadWriteMultiThreadShouldNotCrash() {
         let concurentQueue = DispatchQueue(label: "multithread", attributes: .concurrent)
         let testMixpanel = Mixpanel.initialize(token: randomId(), trackAutomaticEvents: true, flushInterval: 60)
@@ -1047,17 +1063,17 @@ class MixpanelDemoTests: MixpanelBaseTests {
         }
         removeDBfile(testMixpanel.apiToken)
     }
-    
+
     func testMPDB() {
         // we test with this crazy string because the "token" here can be the instanceName
         // which can be any string the user likes, MPDB should strip the non-alphanumeric characters to prevent SQL errors
         let mpdb = MPDB.init(token: "Re@lly  Bad.T0ken+\(randomId())--*🤪/0️⃣\\_? ")
         mpdb.open()
-        
+
         let numRows = 50
         let halfRows = numRows/2
         let eventName = "Test Event"
-        
+
         for pType in PersistenceType.allCases {
             let emptyArray: [InternalProperties] = mpdb.readRows(pType, numRows: numRows)
             XCTAssertTrue(emptyArray.isEmpty, "Table should be empty")
@@ -1078,7 +1094,7 @@ class MixpanelDemoTests: MixpanelBaseTests {
                 // index should be oldest events, 0 - 24
                 XCTAssertEqual(entity["properties"] as! [String : Int], ["index": n], "Should read oldest events first")
             }
-            
+
             mpdb.deleteRows(pType, ids: ids)
             let dataArray2 : [InternalProperties] = mpdb.readRows(pType, numRows: numRows)
             // even though we requested numRows, there should only be halfRows left
@@ -1089,11 +1105,11 @@ class MixpanelDemoTests: MixpanelBaseTests {
                 XCTAssertEqual(entity["properties"] as! [String : Int], ["index": n + halfRows], "Should have deleted oldest events first")
             }
         }
-        
+
         mpdb.close()
         removeDBfile(mpdb.apiToken)
     }
-        
+
     func testMigration() {
         let token = "testToken"
         // clean up
@@ -1110,10 +1126,10 @@ class MixpanelDemoTests: MixpanelBaseTests {
         XCTAssertFalse(fileManager.fileExists(atPath: (libraryUrls.first?.appendingPathComponent("mixpanel-testToken-properties"))!.path), "after migration, the legacy archive files should be removed")
         XCTAssertFalse(fileManager.fileExists(atPath: (libraryUrls.first?.appendingPathComponent("mixpanel-testToken-groups"))!.path), "after migration, the legacy archive files should be removed")
         XCTAssertFalse(fileManager.fileExists(atPath: (libraryUrls.first?.appendingPathComponent("mixpanel-testToken-people"))!.path), "after migration, the legacy archive files should be removed")
-        
+
         let events = eventQueue(token: testMixpanel.apiToken)
         XCTAssertEqual(events.count, 306)
-        
+
         XCTAssertEqual(events[0]["event"] as? String, "$identify")
         XCTAssertEqual(events[1]["event"] as? String, "Logged in")
         XCTAssertEqual(events[2]["event"] as? String, "$ae_first_open")
@@ -1121,14 +1137,14 @@ class MixpanelDemoTests: MixpanelBaseTests {
         let properties = events.last?["properties"] as? InternalProperties
         XCTAssertEqual(properties?["Cool Property"] as? [Int], [12345,301])
         XCTAssertEqual(properties?["Super Property 2"] as? String, "p2")
-        
+
         let people = peopleQueue(token: testMixpanel.apiToken)
         XCTAssertEqual(people.count, 6)
         XCTAssertEqual(people[0]["$distinct_id"] as? String, "demo_user")
         XCTAssertEqual(people[0]["$token"] as? String, "testToken")
         let appendProperties = people[5]["$append"] as! InternalProperties
         XCTAssertEqual(appendProperties["d"] as? String, "goodbye")
-        
+
         let group = groupQueue(token: testMixpanel.apiToken)
         XCTAssertEqual(group.count, 2)
         XCTAssertEqual(group[0]["$group_key"] as? String, "Cool Property")
@@ -1137,7 +1153,7 @@ class MixpanelDemoTests: MixpanelBaseTests {
         let setProperties2 = group[1]["$set"] as! InternalProperties
         XCTAssertEqual(setProperties2["a"] as? Int, 1)
         XCTAssertTrue(MixpanelPersistence.loadOptOutStatusFlag(instanceName: token)!)
-        
+
         //timedEvents
         let testTimedEvents = MixpanelPersistence.loadTimedEvents(instanceName: token)
         XCTAssertEqual(testTimedEvents.count, 3)
@@ -1151,14 +1167,14 @@ class MixpanelDemoTests: MixpanelBaseTests {
         XCTAssertEqual(identity.userId, "demo_user")
         XCTAssertEqual(identity.alias, "New Alias")
         XCTAssertEqual(identity.hadPersistedDistinctId, false)
-        
+
         let superProperties = MixpanelPersistence.loadSuperProperties(instanceName: token)
         XCTAssertEqual(superProperties.count, 7)
         XCTAssertEqual(superProperties["Super Property 1"] as? Int, 1)
         XCTAssertEqual(superProperties["Super Property 7"] as? NSNull, NSNull())
         removeDBfile("testToken")
     }
-    
+
     func prepareForMigrationFiles(_ fileNames: [String]) {
         for fileName in fileNames {
             let fileManager = FileManager.default

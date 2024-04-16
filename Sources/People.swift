@@ -99,7 +99,7 @@ open class People {
         }
 
         if MixpanelInstance.isiOSAppExtension() {
-            delegate?.flush(completion: nil)
+            delegate?.flush(performFullFlush: false, completion: nil)
         }
     }
 
@@ -266,7 +266,7 @@ open class People {
      Delete current user's revenue history.
      */
     open func clearCharges() {
-        set(properties: ["$transactions": []])
+        set(properties: ["$transactions": [] as [Any]])
     }
 
     /**

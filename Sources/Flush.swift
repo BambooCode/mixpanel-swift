@@ -9,7 +9,7 @@
 import Foundation
 
 protocol FlushDelegate: AnyObject {
-    func flush(completion: (() -> Void)?)
+    func flush(performFullFlush: Bool, completion: (() -> Void)?)
     func flushSuccess(type: FlushType, ids: [Int32])
     
     #if os(iOS)
@@ -24,6 +24,7 @@ class Flush: AppLifecycle {
     var flushRequest: FlushRequest
     var flushOnBackground = true
     var _flushInterval = 0.0
+    var _flushBatchSize = APIConstants.maxBatchSize
     private let flushIntervalReadWriteLock: DispatchQueue
 
     var flushInterval: Double {
@@ -37,8 +38,17 @@ class Flush: AppLifecycle {
                 _flushInterval = newValue
             })
 
-            delegate?.flush(completion: nil)
+            delegate?.flush(performFullFlush: false, completion: nil)
             startFlushTimer()
+        }
+    }
+    
+    var flushBatchSize: Int {
+        get {
+            return _flushBatchSize
+        }
+        set {
+            _flushBatchSize = newValue
         }
     }
 
@@ -47,11 +57,11 @@ class Flush: AppLifecycle {
         flushIntervalReadWriteLock = DispatchQueue(label: "com.mixpanel.flush_interval.lock", qos: .utility, attributes: .concurrent, autoreleaseFrequency: .workItem)
     }
 
-    func flushQueue(_ queue: Queue, type: FlushType) {
+    func flushQueue(_ queue: Queue, type: FlushType, headers: [String: String], queryItems: [URLQueryItem]) {
         if flushRequest.requestNotAllowed() {
             return
         }
-        flushQueueInBatches(queue, type: type)
+        flushQueueInBatches(queue, type: type, headers: headers, queryItems: queryItems)
     }
 
     func startFlushTimer() {
@@ -73,7 +83,7 @@ class Flush: AppLifecycle {
     }
 
     @objc func flushSelector() {
-        delegate?.flush(completion: nil)
+        delegate?.flush(performFullFlush: false, completion: nil)
     }
 
     func stopFlushTimer() {
@@ -85,11 +95,10 @@ class Flush: AppLifecycle {
         }
     }
 
-    func flushQueueInBatches(_ queue: Queue, type: FlushType) {
+    func flushQueueInBatches(_ queue: Queue, type: FlushType, headers: [String: String], queryItems: [URLQueryItem]) {
         var mutableQueue = queue
         while !mutableQueue.isEmpty {
-            var shouldContinue = false
-            let batchSize = min(mutableQueue.count, APIConstants.batchSize)
+            let batchSize = min(mutableQueue.count, flushBatchSize)
             let range = 0..<batchSize
             let batch = Array(mutableQueue[range])
             let ids: [Int32] = batch.map { entity in
@@ -100,36 +109,30 @@ class Flush: AppLifecycle {
             Logger.debug(message: batch as Any)
             let requestData = JSONHandler.encodeAPIData(batch)
             if let requestData = requestData {
-                let semaphore = DispatchSemaphore(value: 0)
                 #if os(iOS)
                     if !MixpanelInstance.isiOSAppExtension() {
                         delegate?.updateNetworkActivityIndicator(true)
                     }
                 #endif // os(iOS)
-                flushRequest.sendRequest(requestData,
-                                         type: type,
-                                         useIP: useIPAddressForGeoLocation,
-                                         completion: { [weak self, semaphore] success in
-                                            guard let self = self else { return }
-                                            #if os(iOS)
-                                                if !MixpanelInstance.isiOSAppExtension() {
-                                                    self.delegate?.updateNetworkActivityIndicator(false)
-                                                }
-                                            #endif // os(iOS)
-                                            if success {
-                                                // remove
-                                                self.delegate?.flushSuccess(type: type, ids: ids)
-                                                mutableQueue = self.removeProcessedBatch(batchSize: batchSize,
-                                                                                         queue: mutableQueue,
-                                                                                         type: type)
-                                            }
-                                            shouldContinue = success
-                                            semaphore.signal()
-                })
-                _ = semaphore.wait(timeout: DispatchTime.distantFuture)
-            }
-            if !shouldContinue {
-                break
+                let success = flushRequest.sendRequest(requestData,
+                                                       type: type,
+                                                       useIP: useIPAddressForGeoLocation,
+                                                       headers: headers,
+                                                       queryItems: queryItems)
+                #if os(iOS)
+                if !MixpanelInstance.isiOSAppExtension() {
+                    delegate?.updateNetworkActivityIndicator(false)
+                }
+                #endif // os(iOS)
+                if success {
+                    // remove
+                    delegate?.flushSuccess(type: type, ids: ids)
+                    mutableQueue = self.removeProcessedBatch(batchSize: batchSize,
+                                                                queue: mutableQueue,
+                                                                type: type)
+                } else {
+                    break
+                }
             }
         }
     }
@@ -155,3 +158,4 @@ class Flush: AppLifecycle {
     }
 
 }
+

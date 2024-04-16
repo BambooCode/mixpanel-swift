@@ -1,5 +1,108 @@
 #
 
+## [v4.2.5](https://github.com/mixpanel/mixpanel-swift/tree/v4.2.5) (2024-04-08)
+
+### Enhancements
+
+- feat: Proxy server header capability [\#628](https://github.com/mixpanel/mixpanel-swift/pull/628)
+
+#
+
+## [v4.2.4](https://github.com/mixpanel/mixpanel-swift/tree/v4.2.4) (2024-03-27)
+
+#
+
+## [v4.2.3](https://github.com/mixpanel/mixpanel-swift/tree/v4.2.3) (2024-03-25)
+
+### Fixes
+
+- Make privacy manifest a resource [\#636](https://github.com/mixpanel/mixpanel-swift/pull/636)
+
+#
+
+## [v4.2.2](https://github.com/mixpanel/mixpanel-swift/tree/v4.2.2) (2024-03-18)
+
+#
+
+## [v4.2.1](https://github.com/mixpanel/mixpanel-swift/tree/v4.2.1) (2024-03-14)
+
+### Enhancements
+
+- Add privacy manifest [\#633](https://github.com/mixpanel/mixpanel-swift/pull/633)
+- visionOS Operating System & Version along with Automatic Events [\#627](https://github.com/mixpanel/mixpanel-swift/pull/627)
+
+### Fixes
+
+- Prevent crashes in unregisterSuperProperty [\#623](https://github.com/mixpanel/mixpanel-swift/pull/623)
+
+#
+
+## [v4.2.0](https://github.com/mixpanel/mixpanel-swift/tree/v4.2.0) (2023-11-13)
+
+### Enhancements
+
+- add a new property 'flushBatchSize' for fine tuning the network request [\#617](https://github.com/mixpanel/mixpanel-swift/pull/617)
+
+### Fixes
+
+- Fixes so project builds for visionOS [\#618](https://github.com/mixpanel/mixpanel-swift/pull/618)
+
+#
+
+## [v4.1.4](https://github.com/mixpanel/mixpanel-swift/tree/v4.1.4) (2023-07-19)
+
+### Fixes
+
+- Re-work thread safety mechanisms for flush process [\#611](https://github.com/mixpanel/mixpanel-swift/pull/611)
+
+#
+
+## [v4.1.3](https://github.com/mixpanel/mixpanel-swift/tree/v4.1.3) (2023-06-16)
+
+### Fixes
+
+- Fix potential crash automatic properties [\#608](https://github.com/mixpanel/mixpanel-swift/pull/608)
+
+#
+
+## [v4.1.2](https://github.com/mixpanel/mixpanel-swift/tree/v4.1.2) (2023-05-17)
+
+### Fixes
+
+- Replace deprecated archiving methods [\#603](https://github.com/mixpanel/mixpanel-swift/pull/603)
+- Fix Xcode 14.3 heterogeneous collection warnings [\#602](https://github.com/mixpanel/mixpanel-swift/pull/602)
+
+#
+
+## [v4.1.1](https://github.com/mixpanel/mixpanel-swift/tree/v4.1.1) (2023-04-28)
+
+### Enhancements
+
+- create indexes and enable WAL journal\_mode [\#600](https://github.com/mixpanel/mixpanel-swift/pull/600)
+
+#
+
+## [v4.1.0](https://github.com/mixpanel/mixpanel-swift/tree/v4.1.0) (2023-03-23)
+
+### NOTE:
+
+Starting from this version, we have added a new optional boolean parameter performFullFlush to the flush() method. Default to `false`, a partial flush will be executed for reducing memory footprint. The updated flush() is as follows:
+```
+    /*
+    - parameter performFullFlush: A optional boolean value indicating whether a full flush should be performed. If `true`, a full flush will be triggered, sending all events to the server. Default to `false`, a partial flush will be executed for reducing memory footprint.
+    - parameter completion: an optional completion handler for when the flush has completed.
+    */
+    public func flush(performFullFlush: Bool = false, completion: (() -> Void)? = nil) 
+```
+
+
+### Enhancements
+
+- Set the number of events per flush to 1,000 to reduce memory footprint [\#596](https://github.com/mixpanel/mixpanel-swift/pull/596)
+- Fix CI pod lint: no longer need to exclude watchos  [\#593](https://github.com/mixpanel/mixpanel-swift/pull/593)
+
+#
+
 ## [v4.0.6](https://github.com/mixpanel/mixpanel-swift/tree/v4.0.6) (2023-03-15)
 
 ### Enhancements
@@ -271,6 +374,28 @@ When you call the API `createAlias`, there is an implicit `identify` call inside
 
 - Stop serialize data through NSKeyedArchiver [\#433](https://github.com/mixpanel/mixpanel-swift/issues/433)
 - Sending many events in a row causes OOM crash [\#429](https://github.com/mixpanel/mixpanel-swift/issues/429)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

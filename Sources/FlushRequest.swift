@@ -22,7 +22,8 @@ class FlushRequest: Network {
     func sendRequest(_ requestData: String,
                      type: FlushType,
                      useIP: Bool,
-                     completion: @escaping (Bool) -> Void) {
+                     headers: [String: String],
+                     queryItems: [URLQueryItem] = []) -> Bool {
 
         let responseParser: (Data) -> Int? = { data in
             let response = String(data: data, encoding: String.Encoding.utf8)
@@ -32,20 +33,29 @@ class FlushRequest: Network {
             return nil
         }
         
+        let resourceHeaders: [String: String] = ["Content-Type": "application/json"].merging(headers) {(_,new) in new }
+
         let ipString = useIP ? "1" : "0"
+        var resourceQueryItems: [URLQueryItem] = [URLQueryItem(name: "ip", value: ipString)]
+        resourceQueryItems.append(contentsOf: queryItems)
         let resource = Network.buildResource(path: type.rawValue,
                                              method: .post,
                                              requestBody: requestData.data(using: .utf8),
-                                             queryItems: [URLQueryItem(name: "ip", value: ipString)],
-                                             headers: ["Content-Type": "application/json"],
+                                             queryItems: resourceQueryItems,
+                                             headers: resourceHeaders,
                                              parse: responseParser)
-
+        var result = false
+        let semaphore = DispatchSemaphore(value: 0)
         flushRequestHandler(BasePath.getServerURL(identifier: basePathIdentifier),
                             resource: resource,
                             completion: { success in
-                                completion(success)
+                                result = success
+                                semaphore.signal()
         })
+        _ = semaphore.wait(timeout: .now() + 120.0)
+        return result
     }
+
 
     private func flushRequestHandler(_ base: String,
                                      resource: Resource<Int>,
@@ -93,3 +103,4 @@ class FlushRequest: Network {
     }
 
 }
+
