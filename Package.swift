@@ -14,13 +14,17 @@ let package = Package(
         .library(name: "Mixpanel", targets: ["Mixpanel"])
     ],
      dependencies: [
-        .package(url: "https://github.com/duckduckgo/GRDB.swift", .branch("SQLCipher")),
+        .package(url: "https://github.com/duckduckgo/GRDB.swift", branch: "SQLCipher"),
     ],
     targets: [
         .target(
             name: "Mixpanel",
             path: "Sources",
-            dependencies: ["SQLCipher"],
+            dependencies: [
+                .product(
+                    name: "SQLCipher", 
+                    package: "GRDB")
+            ],
             resources: [
                 .copy("Mixpanel/PrivacyInfo.xcprivacy")
             ]
