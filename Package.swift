@@ -61,16 +61,17 @@ let package = Package(
     targets: [
         .target(
             name: "Mixpanel",
-            path: "Sources",
             dependencies: ["SQLCipher"],
+            path: "Sources",
             resources: [
                 .copy("Mixpanel/PrivacyInfo.xcprivacy")
-            ]
+            ],
             cSettings: cSettings,
             swiftSettings: swiftSettings
         ),
         .target(
             name: "SQLCipher",
+            path: "SQLCipher",
             cSettings: sqlCipherCSettings)
     ],
     swiftLanguageVersions: [.v5]
