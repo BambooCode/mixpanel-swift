@@ -7,9 +7,7 @@
 //
 
 import Foundation
-#if SWIFT_PACKAGE
-@_exported import CSQLite
-#elseif MPCIPHER
+#if MPCIPHER
 @_exported import SQLCipher
 #else
 @_exported import SQLite3
