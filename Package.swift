@@ -14,7 +14,7 @@ let package = Package(
         .library(name: "Mixpanel", targets: ["Mixpanel"])
     ],
      dependencies: [
-        .package(url: "https://github.com/duckduckgo/GRDB.swift", from: "2.3.0"),
+        .package(url: "https://github.com/duckduckgo/GRDB.swift", .branch("SQLCipher")),
     ],
     targets: [
         .target(
