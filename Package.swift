@@ -22,7 +22,7 @@ let package = Package(
             path: "Sources",
             dependencies: [
                 .product(
-                    name: "GRDB", 
+                    name: "SQLCipher", 
                     package: "GRDB.swift")
             ],
             resources: [
