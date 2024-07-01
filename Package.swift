@@ -23,7 +23,7 @@ let package = Package(
             dependencies: [
                 .product(
                     name: "SQLCipher", 
-                    package: "GRDB")
+                    package: "GRDB.swift")
             ],
             resources: [
                 .copy("Mixpanel/PrivacyInfo.xcprivacy")
