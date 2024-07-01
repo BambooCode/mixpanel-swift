@@ -58,21 +58,22 @@ let package = Package(
     products: [
         .library(name: "Mixpanel", targets: ["Mixpanel"])
     ],
+    dependencies: [
+        .package(url: "https://github.com/BambooCode/GRDB.swift.git", branch: "SQLCipher")
+    ],
     targets: [
         .target(
             name: "Mixpanel",
-            dependencies: ["SQLCipher"],
+            dependencies: [
+                .product(name: "SQLCipher", package: "GRDB.swift")
+            ],
             path: "Sources",
             resources: [
                 .copy("Mixpanel/PrivacyInfo.xcprivacy")
             ],
             cSettings: cSettings,
             swiftSettings: swiftSettings
-        ),
-        .target(
-            name: "SQLCipher",
-            path: "SQLCipher",
-            cSettings: sqlCipherCSettings)
+        )
     ],
     swiftLanguageVersions: [.v5]
 )
