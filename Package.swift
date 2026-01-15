@@ -59,13 +59,13 @@ let package = Package(
         .library(name: "Mixpanel", targets: ["Mixpanel"])
     ],
     dependencies: [
-        .package(url: "https://github.com/BambooCode/GRDB.swift.git", revision: "1b5a9dcb2e0dfb0d6aaad9db4fabc9464ee9686c")
+        .package(url: "https://github.com/BambooCode/GRDB.swift.git", revision: "1b514792ec3c5f6d19dcf55c5413046a6ce332a4")
     ],
     targets: [
         .target(
             name: "Mixpanel",
             dependencies: [
-                .product(name: "GRDBSQLite", package: "GRDB.swift")
+                .product(name: "SQLCipher", package: "GRDB.swift")
             ],
             path: "Sources",
             resources: [

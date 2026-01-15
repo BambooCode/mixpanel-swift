@@ -8,7 +8,7 @@
 
 import Foundation
 #if SWIFT_PACKAGE
-@_exported import GRDBSQLite
+@_exported import SQLCipher
 #else
 @_exported import SQLite3
 #endif
