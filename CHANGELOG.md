@@ -1,5 +1,84 @@
 #
 
+## [v5.1.3](https://github.com/mixpanel/mixpanel-swift/tree/v5.1.3) (2025-09-24)
+
+### Enhancements
+
+- Plumb additional flags properties through to exposure event [\#678](https://github.com/mixpanel/mixpanel-swift/pull/678)
+
+#
+
+## [v5.1.2](https://github.com/mixpanel/mixpanel-swift/tree/v5.1.2) (2025-09-17)
+
+### Enhancements
+
+- use HTTP GET for feature flags [\#677](https://github.com/mixpanel/mixpanel-swift/pull/677)
+
+#
+
+## [v5.1.1](https://github.com/mixpanel/mixpanel-swift/tree/v5.1.1) (2025-08-06)
+
+### Enhancements
+
+- Add device\_id as an automatic context value for Feature Flags [\#675](https://github.com/mixpanel/mixpanel-swift/pull/675)
+
+#
+
+## [v5.1.0](https://github.com/mixpanel/mixpanel-swift/tree/v5.1.0) (2025-05-28)
+
+### Enhancements
+
+- Initial support for Feature Flags [\#670](https://github.com/mixpanel/mixpanel-swift/pull/670)
+
+#
+
+## [v5.0.0](https://github.com/mixpanel/mixpanel-swift/tree/v5.0.0) (2025-04-24)
+
+### Enhancements
+
+- Bump minimum iOS to 12 in Package and Pod [\#671](https://github.com/mixpanel/mixpanel-swift/pull/671)
+
+#
+
+## [v4.3.1](https://github.com/mixpanel/mixpanel-swift/tree/v4.3.1) (2025-02-11)
+
+### Enhancements
+
+- Expose publicly some types and methods related to the logging system [\#626](https://github.com/mixpanel/mixpanel-swift/pull/626)
+
+### Fixes
+
+- Check opt out status inside tracking queue to avoid race condition [\#664](https://github.com/mixpanel/mixpanel-swift/pull/664)
+- unregister session replay ID super prop upon backgrounding [\#663](https://github.com/mixpanel/mixpanel-swift/pull/663)
+- Avoid deadlock during first time initialisation [\#657](https://github.com/mixpanel/mixpanel-swift/pull/657)
+
+#
+
+
+## [v4.3.0](https://github.com/mixpanel/mixpanel-swift/tree/v4.3.0) (2024-07-19)
+
+### Enhancements
+
+- Enable cross SDK communication for registering super properties.  [\#628](https://github.com/mixpanel/mixpanel-swift/pull/651)
+
+#
+
+## [v4.2.7](https://github.com/mixpanel/mixpanel-swift/tree/v4.2.7) (2024-05-04)
+
+### Fixes
+
+- Remove all internal tracking and fix crashes caused by it [\#646](https://github.com/mixpanel/mixpanel-swift/pull/646)
+
+#
+
+## [v4.2.6](https://github.com/mixpanel/mixpanel-swift/tree/v4.2.6) (2024-04-19)
+
+### Fixes
+
+- Fix the crash for FlushRequest.sendRequest [\#642](https://github.com/mixpanel/mixpanel-swift/pull/642)
+
+#
+
 ## [v4.2.5](https://github.com/mixpanel/mixpanel-swift/tree/v4.2.5) (2024-04-08)
 
 ### Enhancements
@@ -374,6 +453,24 @@ When you call the API `createAlias`, there is an implicit `identify` call inside
 
 - Stop serialize data through NSKeyedArchiver [\#433](https://github.com/mixpanel/mixpanel-swift/issues/433)
 - Sending many events in a row causes OOM crash [\#429](https://github.com/mixpanel/mixpanel-swift/issues/429)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
