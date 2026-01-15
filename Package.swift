@@ -53,7 +53,7 @@ let package = Package(
       .iOS(.v13),
       .tvOS(.v13),
       .macOS(.v10_15),
-      .watchOS(.v4)
+      .watchOS(.v7)
     ],
     products: [
         .library(name: "Mixpanel", targets: ["Mixpanel"])
