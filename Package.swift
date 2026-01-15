@@ -65,7 +65,7 @@ let package = Package(
         .target(
             name: "Mixpanel",
             dependencies: [
-                .product(name: "SQLCipher", package: "GRDB.swift")
+                .product(name: "GRDBSQLite", package: "GRDB.swift")
             ],
             path: "Sources",
             resources: [
