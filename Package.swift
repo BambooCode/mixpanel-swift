@@ -59,7 +59,7 @@ let package = Package(
         .library(name: "Mixpanel", targets: ["Mixpanel"])
     ],
     dependencies: [
-        .package(url: "https://github.com/BambooCode/GRDB.swift.git", exact: : "0.1.0-sqlcipher")
+        .package(url: "https://github.com/BambooCode/GRDB.swift.git", exact: "0.1.0-sqlcipher")
     ],
     targets: [
         .target(
